@@ -1,29 +1,25 @@
 package dev.tylerm.khs.util;
 
+import dev.tylerm.khs.Main;
 import dev.tylerm.khs.configuration.Localization;
 import dev.tylerm.khs.configuration.LocalizationString;
-import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import dev.tylerm.khs.Main;
 import dev.tylerm.khs.database.Database;
 import dev.tylerm.khs.database.util.PlayerInfo;
 import dev.tylerm.khs.game.Board;
 import dev.tylerm.khs.game.util.Status;
-
-import org.bukkit.Bukkit;
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
 import static dev.tylerm.khs.configuration.Config.placeholderError;
 import static dev.tylerm.khs.configuration.Config.placeholderNoData;
 
-public class PAPIExpansion extends PlaceholderExpansion  {
+public class PAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getIdentifier() {
@@ -53,8 +49,6 @@ public class PAPIExpansion extends PlaceholderExpansion  {
         Status status = Main.getInstance().getGame().getStatus();
         Board board = Main.getInstance().getBoard();
 
-        Bukkit.getLogger().info(Arrays.toString(args));
-
         if (args.length < 1) return null;
 
         if (args.length == 1 && args[0].equals("team")) {
@@ -66,8 +60,11 @@ public class PAPIExpansion extends PlaceholderExpansion  {
                 } else if (board.isSeeker((Player) player)) {
                     LocalizationString seeker = Localization.message("SEEKER_TEAM_NAME");
                     return seeker.toString();
+                } else if (board.isSpectator((Player) player)) {
+                    LocalizationString spectator = Localization.message("SPECTATOR_TEAM_NAME");
+                    return spectator.toString();
                 } else {
-                    return " ";
+                    return "";
                 }
             } else {
                 return " ";
@@ -83,7 +80,7 @@ public class PAPIExpansion extends PlaceholderExpansion  {
                 return "-";
             }
         }
-        
+
         if (args.length == 1 && args[0].equals("seekers")) {
             if (!board.containsUUID(player.getUniqueId())) {
                 return "-";
@@ -108,10 +105,10 @@ public class PAPIExpansion extends PlaceholderExpansion  {
                         return count.toString();
                 }
             } else switch (args[0]) {
-                    case "stats":
-                        return placeholderNoData;
-                    case "rank-place":
-                        return "-";
+                case "stats":
+                    return placeholderNoData;
+                case "rank-place":
+                    return "-";
             }
         }
 
